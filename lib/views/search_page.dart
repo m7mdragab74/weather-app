@@ -18,7 +18,9 @@ class SearchView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Center(
           child: TextField(
-            onSubmitted: (value) {},
+            onSubmitted: (value) {
+              Navigator.of(context).pop(value);
+            },
             decoration: const InputDecoration(
               contentPadding:
                   EdgeInsets.symmetric(vertical: 22, horizontal: 12),
