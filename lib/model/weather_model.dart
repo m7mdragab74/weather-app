@@ -5,8 +5,10 @@ class WeatherModel {
   final double minTemp;
   final String description;
   final String iconCode;
+  final String date;
 
   WeatherModel({
+    required this.date,
     required this.iconCode,
     required this.city,
     required this.temp,
@@ -17,9 +19,10 @@ class WeatherModel {
 
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
     return WeatherModel(
-      city: json['name'],
+      date: json['dt_txt'] ?? "",
+      city: json['name'] ?? "",
       temp: json['main']['temp'].toDouble(),
-      description: json['weather'][0]['description'],
+      description: json['weather'][0]['description'] ?? "",
       maxTemp: json['main']['temp_max'].toDouble(),
       minTemp: json['main']['temp_min'].toDouble(),
       iconCode: json['weather'][0]['icon'],

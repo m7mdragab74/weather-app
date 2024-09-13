@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/model/weather_model.dart';
+import 'package:weather_app/widget/forcast_widget.dart';
 
 class WeatherInfoBody extends StatelessWidget {
-  const WeatherInfoBody({super.key, required this.weatherModel});
+  const WeatherInfoBody({
+    super.key,
+    required this.weatherModel,
+    required this.forecastWeatherList,
+  });
+
   final WeatherModel weatherModel;
+  final List<WeatherModel> forecastWeatherList;
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +24,6 @@ class WeatherInfoBody extends StatelessWidget {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 32,
-            ),
-          ),
-          const Text(
-            'updated at 23:46',
-            style: TextStyle(
-              fontSize: 24,
             ),
           ),
           const SizedBox(height: 32),
@@ -59,6 +60,15 @@ class WeatherInfoBody extends StatelessWidget {
             style: const TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 45),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(forecastWeatherList.length, (index) {
+                return ForWidget(weatherModel: forecastWeatherList[index]);
+              }),
             ),
           )
         ],

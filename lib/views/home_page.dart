@@ -13,7 +13,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late Future<WeatherModel?> weatherFuture;
+  late Future<Map<String, dynamic>?> weatherFuture;
   String cityName = 'Cairo';
 
   @override
@@ -25,7 +25,7 @@ class _HomeViewState extends State<HomeView> {
   void _getWeather(String city) {
     setState(() {
       weatherFuture = Provider.of<WeatherService>(context, listen: false)
-          .getCurrentWeather(cityName: city);
+          .getWeatherData(cityName: city);
     });
   }
 
@@ -42,14 +42,14 @@ class _HomeViewState extends State<HomeView> {
             onPressed: () async {
               final result = await Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) {
-                    return const SearchView();
-                  },
+                  builder: (context) => const SearchView(),
                 ),
               );
               if (result != null) {
-                cityName = result;
-                _getWeather(cityName);
+                setState(() {
+                  cityName = result;
+                  _getWeather(cityName);
+                });
               }
             },
             icon: const Icon(
@@ -60,15 +60,29 @@ class _HomeViewState extends State<HomeView> {
         ],
         backgroundColor: Colors.blue,
       ),
-      body: FutureBuilder<WeatherModel?>(
+      body: FutureBuilder<Map<String, dynamic>?>(
         future: weatherFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data != null) {
-            return WeatherInfoBody(weatherModel: snapshot.data!);
+          } else if (snapshot.hasData) {
+            try {
+              final data = snapshot.data!;
+              final currentWeather =
+                  WeatherModel.fromJson(data['currentWeather']);
+              final forecastWeather = (data['forecastWeather'] as List)
+                  .map((item) => WeatherModel.fromJson(item))
+                  .toList();
+
+              return WeatherInfoBody(
+                weatherModel: currentWeather,
+                forecastWeatherList: forecastWeather,
+              );
+            } catch (e) {
+              return Center(child: Text('Data parsing error: $e'));
+            }
           } else {
             return const Center(
               child: Text(
