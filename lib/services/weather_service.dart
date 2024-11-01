@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class WeatherService {
   final Dio dio;
   final String baseUrl = 'https://api.openweathermap.org/data/2.5';
-  final String apikey = '';
+  final String apikey = '2df1cbb18c4ddd966d2d05fe3f415908';
 
   WeatherService({required this.dio});
 
