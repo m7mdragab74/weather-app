@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class WeatherModel {
   final String city;
   final double temp;
@@ -27,5 +29,37 @@ class WeatherModel {
       minTemp: json['main']['temp_min'].toDouble(),
       iconCode: json['weather'][0]['icon'],
     );
+  }
+
+  MaterialColor getThemeColor() {
+    if (description == 'Sunny' ||
+        description == 'Clear' ||
+        description == 'partly cloudy') {
+      return Colors.orange;
+    } else if (description == 'Blizzard' ||
+        description == 'Patchy snow possible' ||
+        description == 'Patchy sleet possible' ||
+        description == 'Patchy freezing drizzle possible' ||
+        description == 'Blowing snow') {
+      return Colors.blue;
+    } else if (description == 'Freezing fog' ||
+        description == 'Fog' ||
+        description == 'Heavy Cloud' ||
+        description == 'Mist' ||
+        description == 'Fog') {
+      return Colors.blueGrey;
+    } else if (description == 'Patchy rain possible' ||
+        description == 'Heavy Rain' ||
+        description == 'Showers	') {
+      return Colors.blue;
+    } else if (description == 'Thundery outbreaks possible' ||
+        description == 'Moderate or heavy snow with thunder' ||
+        description == 'Patchy light snow with thunder' ||
+        description == 'Moderate or heavy rain with thunder' ||
+        description == 'Patchy light rain with thunder') {
+      return Colors.deepPurple;
+    } else {
+      return Colors.orange;
+    }
   }
 }

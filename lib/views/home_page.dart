@@ -46,7 +46,8 @@ class HomeView extends StatelessWidget {
           } else if (state is WeatherFailure) {
             return Center(child: Text(state.message));
           } else {
-            return const Center(child: Text('Unexpected error occurred'));
+            return const Center(
+                child: Text('Something went wrong please try again'));
           }
         },
       ),

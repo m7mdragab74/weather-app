@@ -9,7 +9,12 @@ import 'services/forecast_weather_services.dart';
 
 void main() {
   runApp(
-    const WeatherApp(),
+    BlocProvider(
+        create: (context) => WeatherCubit(
+              CurrentWeatherServices(Dio()),
+              ForecastWeatherServices(Dio()),
+            ),
+        child: const WeatherApp()),
   );
 }
 
@@ -18,15 +23,17 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WeatherCubit(
-        CurrentWeatherServices(Dio()),
-        ForecastWeatherServices(Dio()),
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch:
+            BlocProvider.of<WeatherCubit>(context).weatherModel == null
+                ? Colors.blue
+                : BlocProvider.of<WeatherCubit>(context)
+                    .weatherModel!
+                    .getThemeColor(),
       ),
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomeView(),
-      ),
+      debugShowCheckedModeBanner: false,
+      home: const HomeView(),
     );
   }
 }
