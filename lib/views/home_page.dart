@@ -41,7 +41,7 @@ class HomeView extends StatelessWidget {
           } else if (state is WeatherSuccess) {
             return WeatherInfoBody(
               weatherModel: state.weatherData,
-              forecastWeatherList: state.forecastList!,
+              forecastWeatherList: state.forecastList ?? [],
             );
           } else if (state is WeatherFailure) {
             return Center(child: Text(state.message));
