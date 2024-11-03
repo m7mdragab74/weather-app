@@ -1,33 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:weather_app/model/weather_model.dart';
-import 'package:weather_app/services/current_weather_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/views/search_page.dart';
+import 'package:weather_app/widget/no_weather_body.dart';
 import 'package:weather_app/widget/weather_info_body.dart';
 
-class HomeView extends StatefulWidget {
+import '../cubits/weather cubit/weather_cubit.dart';
+import '../cubits/weather cubit/weather_state.dart';
+
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
-
-  @override
-  _HomeViewState createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  late Future<Map<String, dynamic>?> weatherFuture;
-  String cityName = 'Cairo';
-
-  @override
-  void initState() {
-    super.initState();
-    _getWeather(cityName);
-  }
-
-  void _getWeather(String city) {
-    setState(() {
-      weatherFuture = Provider.of<WeatherService>(context, listen: false)
-          .getWeatherData(cityName: city);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,60 +20,33 @@ class _HomeViewState extends State<HomeView> {
         ),
         actions: [
           IconButton(
-            onPressed: () async {
-              final result = await Navigator.of(context).push(
+            onPressed: () {
+              Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => const SearchView(),
                 ),
               );
-              if (result != null) {
-                setState(() {
-                  cityName = result;
-                  _getWeather(cityName);
-                });
-              }
             },
-            icon: const Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.search, color: Colors.white),
           ),
         ],
         backgroundColor: Colors.blue,
       ),
-      body: FutureBuilder<Map<String, dynamic>?>(
-        future: weatherFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: BlocBuilder<WeatherCubit, WeatherState>(
+        builder: (context, state) {
+          if (state is WeatherInitial) {
+            return const NoWeatherBody();
+          } else if (state is WeatherLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            try {
-              final data = snapshot.data!;
-              final currentWeather =
-                  WeatherModel.fromJson(data['currentWeather']);
-              final forecastWeather = (data['forecastWeather'] as List)
-                  .map((item) => WeatherModel.fromJson(item))
-                  .toList();
-
-              return WeatherInfoBody(
-                weatherModel: currentWeather,
-                forecastWeatherList: forecastWeather,
-              );
-            } catch (e) {
-              return Center(child: Text('Data parsing error: $e'));
-            }
-          } else {
-            return const Center(
-              child: Text(
-                'No weather data available.',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+          } else if (state is WeatherSuccess) {
+            return WeatherInfoBody(
+              weatherModel: state.weatherData,
+              forecastWeatherList: state.forecastList!,
             );
+          } else if (state is WeatherFailure) {
+            return Center(child: Text(state.message));
+          } else {
+            return const Center(child: Text('Unexpected error occurred'));
           }
         },
       ),

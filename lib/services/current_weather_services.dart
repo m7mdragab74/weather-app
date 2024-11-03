@@ -3,7 +3,7 @@ import 'package:weather_app/model/weather_model.dart';
 
 class CurrentWeatherServices {
   final Dio dio;
-  CurrentWeatherServices({required this.dio});
+  CurrentWeatherServices(this.dio);
   final String baseUrl = 'https://api.openweathermap.org/data/2.5';
   final String apiKey = '2df1cbb18c4ddd966d2d05fe3f415908';
 

@@ -66,11 +66,11 @@ class WeatherInfoBody extends StatelessWidget {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: List.generate(forecastWeatherList.length, (index) {
-                return ForWidget(weatherModel: forecastWeatherList[index]);
-              }),
+              children: forecastWeatherList.map((weather) {
+                return ForecastWidget(weatherModel: weather);
+              }).toList(),
             ),
-          )
+          ),
         ],
       ),
     );
