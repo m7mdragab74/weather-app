@@ -33,7 +33,7 @@ class WeatherModel {
 
   MaterialColor getThemeColor() {
     if (description == 'Sunny' ||
-        description == 'Clear' ||
+        description == 'clear sky' ||
         description == 'partly cloudy') {
       return Colors.orange;
     } else if (description == 'Blizzard' ||
@@ -45,7 +45,7 @@ class WeatherModel {
     } else if (description == 'Freezing fog' ||
         description == 'Fog' ||
         description == 'Heavy Cloud' ||
-        description == 'Mist' ||
+        description == 'Broken clouds' ||
         description == 'Fog') {
       return Colors.blueGrey;
     } else if (description == 'Patchy rain possible' ||
